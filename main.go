@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"mdbooksummarizer/escaper"
 	"os"
 	"path/filepath"
 	"strings"
@@ -20,6 +21,11 @@ func main() {
 		log.Fatal(err)
 	}
 	tree.Print(0)
+
+	err = os.WriteFile(filepath.Join(*srcPath, "SUMMARY.md"), []byte(Draft(*srcPath, tree)), 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 type Node struct {
@@ -34,6 +40,30 @@ func (n *Node) Print(depth int) {
 	for _, child := range n.Children {
 		child.Print(depth + 1)
 	}
+}
+
+func (n *Node) Extend(root string, depth int) []string {
+	var ret []string
+	prefix := strings.Repeat("    ", depth) + "- "
+	rel, err := filepath.Rel(root, n.Path)
+	if err != nil {
+		log.Fatal(err)
+	}
+	ret = append(ret, fmt.Sprintf("%s[%s](%s)\n", prefix, escaper.Format(n.Name), rel))
+	for _, child := range n.Children {
+		ret = append(ret, child.Extend(root, depth+1)...)
+	}
+	return ret
+}
+
+func Draft(root string, node *Node) string {
+	s := `# Summary
+
+`
+	for _, child := range node.Children {
+		s += strings.Join(child.Extend(root, 0), "")
+	}
+	return s
 }
 
 func NewNode(path, base string) (*Node, error) {

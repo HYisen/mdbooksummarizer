@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"log"
 	"strings"
 )
 
@@ -25,5 +26,8 @@ func Header(content []byte) (title string) {
 }
 
 func ParseMdHeader(s string) string {
+	if !strings.HasPrefix(s, "# ") {
+		log.Fatalf("unexpected header line [%s]", s)
+	}
 	return strings.TrimLeft(s, "# ")
 }

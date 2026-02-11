@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"fmt"
 	"log"
+	"mdbooksummarizer/escaper"
 	"strings"
 )
 
@@ -29,5 +30,7 @@ func ParseMdHeader(s string) string {
 	if !strings.HasPrefix(s, "# ") {
 		log.Fatalf("unexpected header line [%s]", s)
 	}
-	return strings.TrimLeft(s, "# ")
+	s = strings.TrimLeft(s, "# ")
+	s = escaper.Parse(s)
+	return s
 }

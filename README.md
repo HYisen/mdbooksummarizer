@@ -6,6 +6,11 @@ A better [mdbook-auto-gen-summary](https://github.com/cococolanosugar/mdbook-aut
 
 Extract more information from content to title.
 
+## Accomplished Features
+
+- Generate `SUMMARY.md` in format.
+- Ignore non-chapter files.
+
 ## Unimplemented Features
 
 - Become a [mdBook preprocessors](https://rust-lang.github.io/mdBook/for_developers/preprocessors.html).

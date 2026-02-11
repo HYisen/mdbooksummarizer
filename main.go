@@ -4,9 +4,12 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"maps"
 	"mdbooksummarizer/escaper"
 	"os"
 	"path/filepath"
+	"slices"
+	"strconv"
 	"strings"
 )
 
@@ -107,8 +110,35 @@ func NewNodeFromDir(path, base string) (*Node, error) {
 	return &Node{
 		Name:     base,
 		Path:     filepath.Join(path, base, "README.md"),
-		Children: children,
+		Children: SortByIDFirst(children),
 	}, nil
+}
+
+func SortByIDFirst(nodes []*Node) []*Node {
+	var withoutIDs []*Node
+	idToNodes := make(map[int]*Node)
+
+	for _, node := range nodes {
+		filename := filepath.Base(node.Path)
+		name := strings.TrimSuffix(filename, filepath.Ext(filename))
+		id, err := strconv.Atoi(name)
+		if err == nil {
+			if _, ok := idToNodes[id]; ok {
+				log.Fatalf("duplicate id %d on %+v and %+v", id, node, idToNodes[id])
+			}
+			idToNodes[id] = node
+		} else {
+			withoutIDs = append(withoutIDs, node)
+		}
+	}
+
+	ret := withoutIDs
+	ids := slices.Collect(maps.Keys(idToNodes))
+	slices.Sort(ids)
+	for _, id := range ids {
+		ret = append(ret, idToNodes[id])
+	}
+	return ret
 }
 
 func NewNodeFromFile(path, base string) (*Node, error) {

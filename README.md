@@ -10,6 +10,7 @@ Extract more information from content to title.
 
 - Generate `SUMMARY.md` in format.
 - Ignore non-chapter files.
+- Sort chapters by filenames.
 
 ## Unimplemented Features
 

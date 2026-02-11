@@ -82,7 +82,7 @@ func NewNodeFromDir(path, base string) (*Node, error) {
 }
 
 func NewNodeFromFile(path, base string) (*Node, error) {
-	if filepath.Ext(base) != ".md" || base == "README.md" {
+	if filepath.Ext(base) != ".md" || base == "README.md" || base == "SUMMARY.md" {
 		return nil, nil
 	}
 	current := filepath.Join(path, base)

@@ -93,7 +93,7 @@ func NewNodeFromFile(path, base string) (*Node, error) {
 	}
 
 	return &Node{
-		Name:     fmt.Sprintf("filesize %d", len(data)),
+		Name:     Digester(data),
 		Path:     current,
 		Children: nil,
 	}, nil
